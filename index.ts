@@ -1,5 +1,6 @@
 import Jimp from 'jimp';
-import {httpServer} from './src/http_server/index.js';
+//@ts-ignore
+import { httpServer } from './src/http_server/index.ts';
 import robot from 'robotjs';
 import { WebSocketServer } from 'ws';
 
