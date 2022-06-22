@@ -16,10 +16,11 @@ export const commands = {
 
 function move_mouse(directMoveHorisontal: number = 0, directMoveVertical: number = 0): Function {
     function move_mouse_to_position(mouse: IMousePosition, move: number) {
-        console.log(mouse, directMoveHorisontal, directMoveVertical, move);
-        console.log(arguments);
+        console.log(mouse, directMoveHorisontal, directMoveVertical, move, typeof mouse.x, typeof mouse.y, typeof move);
         mouse.x += directMoveHorisontal * move;
         mouse.y += directMoveVertical * move;
+        console.log(mouse, directMoveHorisontal, directMoveVertical, move);
+        checkMousePosition(mouse);
     }
     return move_mouse_to_position;
 }
@@ -45,12 +46,12 @@ function printScreen() {
     
 }
 
+const maxScreenX: number = (process.env.SCREEN_X_MAX) ? Number(process.env.SCREEN_X_MAX) : 1920;
+const maxScreenY: number = (process.env.SCREEN_Y_MAX) ? Number(process.env.SCREEN_Y_MAX) : 1080;
+const minScreenX: number = (process.env.SCREEN_X_MIN) ? Number(process.env.SCREEN_X_MIN) : 0;
+const minScreenY: number = (process.env.SCREEN_Y_MIN) ? Number(process.env.SCREEN_Y_MIN) : 0;
 function checkMousePosition(mouse: IMousePosition): boolean {
     let answer = true;
-    const maxScreenX = (process.env.SCREEN_X_MAX) ? process.env.SCREEN_X_MAX : 1920;
-    const maxScreenY = (process.env.SCREEN_Y_MAX) ? process.env.SCREEN_Y_MAX : 1080;
-    const minScreenX = (process.env.SCREEN_X_MIN) ? process.env.SCREEN_X_MIN : 0;
-    const minScreenY = (process.env.SCREEN_Y_MIN) ? process.env.SCREEN_Y_MIN : 0;
     if (mouse.x > maxScreenX) {
         mouse.x = maxScreenX;
         answer = false;
@@ -62,7 +63,7 @@ function checkMousePosition(mouse: IMousePosition): boolean {
         mouse.y = maxScreenY;
         answer = false;
     } else if(mouse.y < minScreenY) {
-        mouse.Y = minScreenY;
+        mouse.y = minScreenY;
         answer = false;
     }
     return answer;
