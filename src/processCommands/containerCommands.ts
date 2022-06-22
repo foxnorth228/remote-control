@@ -1,4 +1,5 @@
 import "dotenv/config";
+import process from "process";
 //@ts-ignore
 import { IMousePosition  } from "../mouseInf/mouseInf.ts";
 export const commands = {
@@ -42,4 +43,27 @@ function drawSquare() {
 
 function printScreen() {
     
+}
+
+function checkMousePosition(mouse: IMousePosition): boolean {
+    let answer = true;
+    const maxScreenX = (process.env.SCREEN_X_MAX) ? process.env.SCREEN_X_MAX : 1920;
+    const maxScreenY = (process.env.SCREEN_Y_MAX) ? process.env.SCREEN_Y_MAX : 1080;
+    const minScreenX = (process.env.SCREEN_X_MIN) ? process.env.SCREEN_X_MIN : 0;
+    const minScreenY = (process.env.SCREEN_Y_MIN) ? process.env.SCREEN_Y_MIN : 0;
+    if (mouse.x > maxScreenX) {
+        mouse.x = maxScreenX;
+        answer = false;
+    } else if(mouse.x < minScreenX) {
+        mouse.x = minScreenX;
+        answer = false;
+    }
+    if (mouse.y > maxScreenY) {
+        mouse.y = maxScreenY;
+        answer = false;
+    } else if(mouse.y < minScreenY) {
+        mouse.Y = minScreenY;
+        answer = false;
+    }
+    return answer;
 }
