@@ -1,14 +1,10 @@
 import "dotenv/config";
-import Jimp from 'jimp';
-import robot from 'robotjs';
 import process from "process";
-//@ts-ignore
-import { IMousePosition } from "./src/mouseInf/mouseInf.ts";
 //@ts-ignore
 import { httpServer } from './src/http_server/index.ts';
 //@ts-ignore
 import { processRequest } from './src/processCommands/processCommands.ts';
-import { WebSocketServer, WebSocket, createWebSocketStream } from 'ws';
+import { WebSocketServer, createWebSocketStream } from 'ws';
 
 const HTTP_PORT = process.env.HTTP_PORT;
 httpServer.listen(HTTP_PORT);
@@ -21,16 +17,18 @@ const wss = new WebSocketServer({
     port: wss_port
 });
 
-const mousePosition: IMousePosition = {
-    x: 0,
-    y: 0,
-}
-
-wss.on("connection", async (ws, req) => {
+wss.on("connection", async (ws) => {
     console.log("connect");
-    console.log(req.socket.remoteAddress);
-    ws.on("message", (data) => {
-        processRequest(mousePosition, data.toString());
-        ws.send(`mouse_position ${mousePosition.x},${mousePosition.y}`);
-    })
-})
+    const wsStream = createWebSocketStream(ws, { encoding: 'utf-8', decodeStrings: false });
+    wsStream.on("data", async (chunk) => {
+        console.log(chunk);
+        const answer = await processRequest(ws, chunk.toString());
+        if (answer[1] !== null) {
+            console.log(`Answer: ${answer[0]} ${answer[1]}`);
+            wsStream.write(`${answer[0]} ${answer[1]}\0`);
+        } else {
+            console.log(`The command ${chunk} process successfully`)
+        }
+    });
+});
+console.log(`Start web socket server on the ${wss_port} port!`)
