@@ -31,4 +31,4 @@ wss.on("connection", async (ws) => {
         }
     });
 });
-console.log(`Start web socket server on the ${wss_port} port!`)
+console.log(`Start web socket server on the ${wss_host} ${wss_port}!`)
